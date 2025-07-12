@@ -1,0 +1,97 @@
+<!-- Load Video.js CSS -->
+<link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet"/>
+
+<!-- Styling -->
+<style>
+  .bimwin-container {
+    font-family: sans-serif;
+    max-width: 720px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .video-js.vjs-fluid {
+    padding-top: 56.25% !important; /* 16:9 Ratio */
+  }
+
+  #btn-wrapper {
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  .btn-evaluasi {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #1b9e77;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    display: none; /* Tombol disembunyikan awalnya */
+  }
+</style>
+
+<!-- Konten -->
+<div class="bimwin-container">
+  <h2>Modul: Keyakinan 4</h2>
+  <p>Tonton video sampai selesai. Tombol evaluasi akan muncul otomatis.</p>
+
+  <!-- Pemutar Video -->
+  <video
+    id="bimwin-video"
+    class="video-js vjs-default-skin vjs-fluid"
+    controls
+    preload="auto"
+    data-setup='{}'>
+    <source src="https://github.com/kuangaringan/bimwin-online/raw/refs/heads/main/keyakinan%204.mp4" type="video/mp4">
+    <p class="vjs-no-js">Browser Anda tidak mendukung video.</p>
+  </video>
+
+  <!-- Tombol Evaluasi -->
+  <div id="btn-wrapper">
+    <a class="btn-evaluasi" id="btn-evaluasi" href="https://forms.gle/ISI-LINK-EVALUASI" target="_blank">
+      ➡️ Lanjut ke Evaluasi Modul Keyakinan 4
+    </a>
+  </div>
+</div>
+
+<!-- Load Video.js -->
+<script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+
+<!-- Script Anti-Skip + Evaluasi -->
+<script>
+  const player = videojs('bimwin-video');
+  const btn = document.getElementById('btn-evaluasi');
+  let allowedTime = 0;
+
+  // Deteksi saat user mencoba seek
+  player.on('seeking', () => {
+    const currentTime = player.currentTime();
+    if (currentTime > allowedTime + 1) {
+      player.currentTime(allowedTime); // Balik ke waktu terakhir yang sah
+    }
+  });
+
+  // Update waktu sah saat video normal diputar
+  player.on('timeupdate', () => {
+    const currentTime = player.currentTime();
+    if (!player.seeking()) {
+      allowedTime = currentTime;
+    }
+  });
+
+  // Matikan klik kanan dan keyboard
+  player.ready(() => {
+    const el = player.el();
+    el.addEventListener('contextmenu', e => e.preventDefault());
+    el.addEventListener('keydown', e => e.preventDefault());
+  });
+
+  // Tampilkan tombol saat video selesai
+  player.on('ended', () => {
+    btn.style.display = 'inline-block';
+  });
+</script>
